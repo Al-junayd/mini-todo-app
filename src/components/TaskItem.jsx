@@ -1,20 +1,22 @@
 import React from "react";
 
-function TaskItem({ task, onSelectTask }) {
+function TaskItem({ task, onSelectTask, onToggleComplete }) {
   return (
     <div className="flex justify-center h-[91px] w-full items-center shadow-lg rounded-md border bg-white border-[#E7E7E7]">
       <div className="flex justify-between w-full pl-[23px] pr-[19px] items-center">
         {task.completed ? (
           <img
-            src="/images/completedIcon.png"
-            alt="avatar"
-            className="w-8 h-8 mr-[17px] cursor-pointer"
+            src="/images/completedIcon.svg"
+            alt="completed"
+            className="w-8 h-8 mr-[17px]"
+            onClick={() => onToggleComplete(task.id)}
           />
         ) : (
           <input
             type="radio"
-            onChange={() => onSelectTask(task)}
-            className="mr-[17px] w-8 h-8 border-primary border-2"
+            checked={task.completed}
+            onChange={() => onToggleComplete(task.id)}
+            className="mr-[17px] w-8 h-8 border-primary border-2 rounded-full cursor-pointer"
           />
         )}
 

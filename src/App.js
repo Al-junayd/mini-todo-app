@@ -1,22 +1,56 @@
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 import React, { useState } from "react";
 import TaskList from "./components/TaskList";
 import EditTask from "./components/EditTask";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [selectedTask, setSelectedTask] = useState(null);
-  const tasks = [
+  const [tasks, setTasks] = useState([
     { id: 1, name: "Training at the Gym", completed: true },
     { id: 2, name: "Play Paddle with friends", completed: false },
     { id: 3, name: "Burger BBQ with family", completed: false },
-  ];
+  ]);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const handleSave = (taskName) => {
+    if (selectedTask) {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === selectedTask.id ? { ...task, name: taskName } : task
+        )
+      );
+      toast.success("Task updated successfully");
+    } else {
+      const newTask = { id: Date.now(), name: taskName, completed: false };
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+      toast.success("Task added successfully");
+    }
+    setSelectedTask(null);
+  };
+
+  const handleDelete = () => {
+    if (selectedTask) {
+      setTasks((prevTasks) =>
+        prevTasks.filter((task) => task.id !== selectedTask.id)
+      );
+      toast.success("Task deleted successfully");
+      setSelectedTask(null);
+    }
+  };
+
+  const handleToggleComplete = (taskId) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    );
+    toast.success("Task completion status updated");
+  };
 
   return (
-    <main className="h-full  font-roboto w-full flex justify-center items-center bg-[#F3F3F3]">
-      <div className=" max-w-[1040px]  flex">
-        <div className="relative w-[424px] pb-6 min-h-[700px]  shadow-2xl">
+    <main className=" h-screen font-roboto w-full flex justify-center items-center bg-[#F3F3F3]">
+      <div className=" relative max-w-[1040px] flex">
+        <div className="relative w-[424px] pb-6 min-h-[700px] shadow-2xl">
           <div className="text-white flex gap-[21px] pl-8 pt-[23.5px] pb-5 bg-blueBg">
             <img
               src="/images/avatar.png"
@@ -24,7 +58,7 @@ function App() {
               className="w-[50px] h-[50px]"
             />
             <div className="max-w-[221px]">
-              <h2 className="text-base text-shadow-black  font-500 leading-[18.75px] mb-2">
+              <h2 className="text-base text-shadow-black font-500 leading-[18.75px] mb-2">
                 Hello, Jhon
               </h2>
               <p className="italic text-shadow-black font-roboto font-thin text-[25px] leading-[26.46px]">
@@ -43,38 +77,28 @@ function App() {
               $1
             </div>
           </button>
-          <div className="my-5 mx-4 ">
-            <TaskList tasks={tasks} onSelectTask={setSelectedTask} />
-          </div>
-
-          <div className="absolute bottom-[25px] right-4  flex justify-end items-center">
-            <button className="mr-6 bg-blueBg rounded-full flex justify-center items-center border-blue-900 border-[3px]  w-[60px] h-[60px]">
-              <img
-                src="/images/addIcon.svg"
-                alt="add-icon"
-                className="w-[21px] h-[42px]"
-              />
-            </button>
+          <div className="my-5 mx-4">
+            <TaskList
+              tasks={tasks}
+              onSelectTask={setSelectedTask}
+              onToggleComplete={handleToggleComplete}
+            />
           </div>
         </div>
-        <div className="w-[635px] flex flex-col h-full ">
-          <div className="text-white text-shadow-black  text-2xl font-medium leading-[28.13px] flex justify-center items-center h-[123px] bg-blueBg">
+        <div className="w-[635px] flex flex-col h-full">
+          <div className="text-white text-shadow-black text-2xl font-medium leading-[28.13px] flex justify-center items-center h-[123px] bg-blueBg">
             Edit Task
           </div>
-          <div className="pl-[17px] pr-[22px]">
-            <EditTask task={selectedTask} />
-
-            <div className="mt-auto flex gap-4 items-center w-full ">
-              <button className="text-shadow-black bg-redBtn px-6 py-5 border-2 border-red-900 rounded-md text-lg text-white">
-                Delete
-              </button>
-              <button className="text-shadow-black bg-primary w-full  py-5 border-2 border-blue-900 rounded-md text-lg text-white">
-                Save
-              </button>
-            </div>
+          <div className="pl-[17px] pr-[22px] flex-grow">
+            <EditTask
+              task={selectedTask}
+              onSave={handleSave}
+              onDelete={handleDelete}
+            />
           </div>
         </div>
       </div>
+      <ToastContainer />
     </main>
   );
 }
