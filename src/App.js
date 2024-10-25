@@ -48,8 +48,8 @@ function App() {
   };
 
   return (
-    <main className=" h-screen font-roboto w-full flex justify-center items-center bg-[#F3F3F3]">
-      <div className=" relative max-w-[1040px] flex">
+    <main className=" h-screen font-roboto w-full flex justify-center items-center">
+      <div className=" relative max-w-[1040px] flex bg-[#F3F3F3]">
         <div className="relative w-[424px] pb-6 min-h-[700px] shadow-2xl">
           <div className="text-white flex gap-[21px] pl-8 pt-[23.5px] pb-5 bg-blueBg">
             <img
